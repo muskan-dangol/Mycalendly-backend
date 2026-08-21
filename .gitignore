@@ -1,0 +1,7 @@
+.env
+.env.development
+node_modules/
+
+
+# App-local DB scripts (not part of infra)
+/dist/src/database/

@@ -1,0 +1,90 @@
+
+# OAuth-integration
+
+Simple integration to build a calendly alike service (development). This file contains the essentials to run the project locally.
+
+**Requirements**
+- Node.js 16+ (use nvm to manage versions)
+- npm or Yarn
+- A running database (Postgres is recommended) if you run integration tests
+- Git
+
+**Quick Start**
+1. Install dependencies:
+
+```bash
+npm install
+# or yarn
+yarn install
+```
+
+2. Create environment variables:
+
+Copy or create a `.env` file in the project root and set the required values. At minimum set:
+
+```
+DATABASE_URL=postgres://user:pass@localhost:5432/dbname
+PORT=3000
+# OAuth client credentials (example keys — replace with real values)
+OAUTH_CLIENT_ID=your_client_id
+OAUTH_CLIENT_SECRET=your_client_secret
+OAUTH_CALLBACK_URL=http://localhost:3000/auth/callback
+```
+
+3. Database (if used):
+
+- This project includes a `knexfile.ts`. If you use Knex migrations, run them with your installed tooling. Example using `knex` CLI via npx:
+
+```bash
+# run migrations (ensure knex is installed as a dev dependency)
+npx knex --knexfile ./knexfile.ts migrate:latest
+```
+
+- There is also a helper script at `scripts/test-db.ts` for test DB setup — run it using `ts-node` if needed:
+
+```bash
+npx ts-node scripts/test-db.ts
+```
+
+4. Run the app (development):
+
+If there is a start script in `package.json`:
+
+```bash
+npm start
+# or
+yarn start
+```
+
+If the project is TypeScript-only without a build script, use `ts-node` for quick development:
+
+```bash
+npx ts-node src/index.ts
+```
+
+5. Run tests:
+
+```bash
+npm test
+# or directly with jest
+npx jest
+```
+
+**Useful commands**
+- Install deps: `npm install`
+- Run tests: `npm test` or `npx jest`
+- Run migrations: `npx knex --knexfile ./knexfile.ts migrate:latest`
+- Run helper DB script: `npx ts-node scripts/test-db.ts`
+
+**Troubleshooting**
+- If TypeScript files run errors, ensure dev dependencies include `ts-node` and `typescript` and that `tsconfig.json` is present.
+- If database connections fail, verify `DATABASE_URL` and that the DB server accepts connections from your host.
+- If a script name in `package.json` is missing, run the TypeScript entry point with `npx ts-node` or build with `npm run build` (if provided).
+
+**Where to look next**
+- Tests: [tests/auth.test.ts](tests/auth.test.ts#L1)
+- Database config: [knexfile.ts](knexfile.ts#L1)
+- Project configuration: [config.ts](config.ts#L1)
+
+If you want, I can add a `.env.example` file and wire specific `package.json` scripts — tell me which you'd prefer.
+
