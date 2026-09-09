@@ -6,8 +6,8 @@ export const sendSuccessResponse = <T>(
   data: T,
   message: string = "Success",
   statusCode = 200,
-) => {
-  res.status(statusCode).json({
+): Response => {
+  return res.status(statusCode).json({
     success: true,
     message,
     data,
@@ -34,5 +34,6 @@ export const sendErrorResponse = (
     success: false,
     message,
     error,
+    statusCode,
   } as ApiResponse);
 };

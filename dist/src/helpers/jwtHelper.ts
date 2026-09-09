@@ -43,3 +43,13 @@ export const verifyToken = (token: string): tokenPayload => {
   }
   return jwt.verify(token, secret) as tokenPayload;
 };
+
+export const verifyEmailToken = (token: string): EmailVerificationTokenPayload => {
+  const secret = process.env.JWT_SECRET_KEY;
+
+  if (!secret) {
+    throw new Error("JWT secret key is not defined");
+  }
+
+  return jwt.verify(token, secret) as EmailVerificationTokenPayload;
+};

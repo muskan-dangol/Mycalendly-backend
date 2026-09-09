@@ -2,10 +2,14 @@ import bcrypt from "bcrypt";
 import db from "../database/db";
 import { logger } from "../utils/logger";
 import { UserRow } from "../types/userTypes";
-import { generateAccessToken } from "../helpers/jwtHelper";
+import {
+  generateAccessToken,
+  generateEmailVerificationToken,
+} from "../helpers/jwtHelper";
 
 import { getUserByEmail } from "../models/userModel";
 import { lastLoggedIn } from "../models/authModels";
+import { sendEmail } from "../utils/sendEmail";
 
 export interface registerInput {
   email: string;
@@ -63,13 +67,16 @@ export const registerUser = async (
     const hashedPassword = await hashpassword(password);
 
     // create a new user
-    const [newUser] = (await db("user").withSchema("Oauth")
+    const [newUser] = (await db("user")
+      .withSchema("Oauth")
       .insert({
         email: normalizeEmail(email),
         first_name: firstName,
         last_name: lastName,
         password_hash: hashedPassword,
+        email_verified: false,
       })
+
       .returning([
         "id",
         "email",
@@ -91,6 +98,33 @@ export const registerUser = async (
     // update last logged in time
     await lastLoggedIn(newUser.id);
 
+    // send verification email asynchronously
+    try {
+      const verificationToken = generateEmailVerificationToken({
+        userId: newUser.id,
+        email: newUser.email,
+        type: "email_verification",
+      }); // Assuming the token is returned in the user object
+
+      // Send verification email
+      const verificationUrl = `${process.env.FRONTEND_URL}/api/auth/verifyemail/${verificationToken}`;
+      const message = `<p>You are getting this email because you tried to register with this email address at mycalendy.</p>
+      <p>Please verify your email by clicking the following link: <a href="${verificationUrl}">${verificationUrl}</a></p>
+      <p>If you did not request this, please ignore this email.</p>`;
+
+      await sendEmail({
+        email: newUser.email,
+        subject: "Email Verification",
+        html: message,
+        message,
+      });
+    } catch (error) {
+      logger.error(
+        `Error sending verification email to ${newUser.email} for userId : ${newUser.id}`,
+        error,
+      );
+    }
+
     logger.info(`User registered successfully: ${newUser.email}`);
 
     return {
@@ -104,7 +138,10 @@ export const registerUser = async (
       token,
     };
   } catch (error) {
-    logger.error("Error registering user:", error instanceof Error ? error.stack : error);
+    logger.error(
+      "Error registering user:",
+      error instanceof Error ? error.stack : error,
+    );
     if (error instanceof Error) throw error;
     throw new Error(String(error));
   }
@@ -146,7 +183,10 @@ export const loginUser = async (
       token,
     };
   } catch (error) {
-    logger.error("Error logging in user:", error instanceof Error ? error.stack : error);
+    logger.error(
+      "Error logging in user:",
+      error instanceof Error ? error.stack : error,
+    );
     if (error instanceof Error) throw error;
     throw new Error(String(error));
   }
