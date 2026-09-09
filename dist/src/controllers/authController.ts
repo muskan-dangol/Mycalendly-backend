@@ -76,7 +76,6 @@ export const login = async (req: Request, res: Response) => {
           res,
           "Authentication failed",
           "Invalid password",
-
           401,
         );
       }
