@@ -107,7 +107,10 @@ export const registerUser = async (
       }); // Assuming the token is returned in the user object
 
       // Send verification email
-      const verificationUrl = `${process.env.FRONTEND_URL}/api/auth/verifyemail/${verificationToken}`;
+      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3001";
+      const verificationUrl = `${frontendUrl}/verify-email?token=${verificationToken}`;
+
+      // const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
       const message = `<p>You are getting this email because you tried to register with this email address at mycalendy.</p>
       <p>Please verify your email by clicking the following link: <a href="${verificationUrl}">${verificationUrl}</a></p>
       <p>If you did not request this, please ignore this email.</p>`;

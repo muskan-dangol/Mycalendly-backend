@@ -46,7 +46,7 @@ export const register = async (req: Request, res: Response) => {
     return sendErrorResponse(
       res,
       "Error registering user",
-      "Internal server error",
+      error instanceof Error ? error.message : "Internal server error",
       500,
     );
   }

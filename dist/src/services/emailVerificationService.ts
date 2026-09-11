@@ -57,10 +57,11 @@ export const verifyEmail = async (data: EmailVerificationData) => {
 
       await db("user").withSchema("Oauth").where({ id: userId }).update({
         email_verified: true,
-        updated_at: db.fn.now(),
+        updated_on: db.fn.now(),
       });
 
-      const message = `<p>Your email has been successfully verified.</p>`;
+      const message = `<p>Your email has been successfully verified.</p>
+      <p>Follow that link to continue using our services: <a href="http://localhost:3001/login">http://localhost:3001/login</a></p>`;
 
       await sendEmail({
         email: email,
