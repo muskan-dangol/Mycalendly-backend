@@ -39,7 +39,7 @@ const SALT_ROUNDS = 10;
 const normalizeEmail = (email: string): string => email.trim().toLowerCase();
 
 // hashing password by using bcrypt
-const hashpassword = async (password: string): Promise<string> => {
+export const hashpassword = async (password: string): Promise<string> => {
   return bcrypt.hash(password, SALT_ROUNDS);
 };
 

@@ -11,6 +11,12 @@ export interface EmailVerificationTokenPayload {
   type: "email_verification";
 }
 
+export interface PasswordResetTokenPayload {
+  userId: string;
+  email: string;
+  type: "password-reset";
+}
+
 export const generateAccessToken = (payload: tokenPayload): string => {
   const secret = process.env.JWT_SECRET_KEY;
   const expiresIn: string = process.env.JWT_ACCESS_TOKEN_EXPIRES_IN || "30d";
@@ -44,7 +50,9 @@ export const verifyToken = (token: string): tokenPayload => {
   return jwt.verify(token, secret) as tokenPayload;
 };
 
-export const verifyEmailToken = (token: string): EmailVerificationTokenPayload => {
+export const verifyEmailToken = (
+  token: string,
+): EmailVerificationTokenPayload => {
   const secret = process.env.JWT_SECRET_KEY;
 
   if (!secret) {
@@ -52,4 +60,41 @@ export const verifyEmailToken = (token: string): EmailVerificationTokenPayload =
   }
 
   return jwt.verify(token, secret) as EmailVerificationTokenPayload;
+};
+
+/**
+ * Generate password reset token
+ */
+export const generatePasswordResetToken = (
+  payload: PasswordResetTokenPayload,
+): string => {
+  const secret = process.env.JWT_SECRET_KEY;
+  const expiresIn = "24h"; // Password reset tokens expire in 24 hours
+
+  if (!secret) {
+    throw new Error("JWT_SECRET_KEY is not defined");
+  }
+
+  return jwt.sign(payload, secret, { expiresIn } as jwt.SignOptions);
+};
+
+/**
+ * Verify password reset token
+ */
+export const verifyPasswordResetToken = (
+  token: string,
+): PasswordResetTokenPayload => {
+  const secret = process.env.JWT_SECRET_KEY;
+
+  if (!secret) {
+    throw new Error("JWT_SECRET_KEY is not defined");
+  }
+
+  const decoded = jwt.verify(token, secret) as PasswordResetTokenPayload;
+
+  if (decoded.type !== "password-reset") {
+    throw new Error("Invalid token type");
+  }
+
+  return decoded;
 };
