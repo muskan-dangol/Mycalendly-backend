@@ -10,6 +10,13 @@ export interface UserRow {
   last_logged_in?: Date;
 }
 
+export interface partialUserData {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  hashedPassword?: string;
+}
+
 export interface registerInput {
   email: string;
   password: string;
@@ -23,5 +30,12 @@ export interface loginInput {
 }
 
 export interface AuthResponse {
+  user?: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    emailVerified: boolean;
+  };
   token: string;
 }

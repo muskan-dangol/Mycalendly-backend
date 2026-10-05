@@ -2,10 +2,10 @@ import request from "supertest";
 import express from "express";
 import { beforeEach, describe, expect, jest, it } from "@jest/globals";
 
-import router from "../routes/index";
-import { registerUser, loginUser } from "../services/authSerivce";
+import router from "../index";
+import { registerUser, loginUser } from "../../services/authSerivce";
 
-jest.mock("../services/authSerivce", () => ({
+jest.mock("../../services/authSerivce", () => ({
   registerUser: jest.fn(),
   loginUser: jest.fn(),
 }));

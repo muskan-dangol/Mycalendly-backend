@@ -1,5 +1,6 @@
 import { Router } from "express";
 import authRoutes from "./authRoutes";
+import emailVerifyRoutes from "./emailVerifyRoutes";
 
 const router = Router();
 
@@ -12,5 +13,6 @@ router.get("/health", (_req, res) => {
 });
 
 router.use("/auth", authRoutes);
+router.use("/user", emailVerifyRoutes);
 
 export default router;
