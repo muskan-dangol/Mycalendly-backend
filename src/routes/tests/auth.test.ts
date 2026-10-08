@@ -95,7 +95,7 @@ describe("Auth API /login", () => {
     expect(res.status).toBe(500);
     expect(res.body).toHaveProperty("success", false);
     expect(res.body).toHaveProperty("message");
-    expect(res.body.message).toContain("Internal server error");
+    expect(res.body.message).toContain("Invalid password");
   });
 
   it("POST /api/auth/login - user not found", async () => {
@@ -109,6 +109,6 @@ describe("Auth API /login", () => {
     expect(res.status).toBe(500);
     expect(res.body).toHaveProperty("success", false);
     expect(res.body).toHaveProperty("message");
-    expect(res.body.message).toContain("Internal server error");
+    expect(res.body.message).toContain("User not found");
   });
 });

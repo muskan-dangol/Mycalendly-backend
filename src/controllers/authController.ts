@@ -30,7 +30,7 @@ export const register = async (req: Request, res: Response) => {
     return sendErrorResponse(
       res,
       "Error registering user",
-      "Internal server error",
+      error instanceof Error ? error.message : "Internal server error",
       500,
     );
   }
@@ -55,7 +55,7 @@ export const login = async (req: Request, res: Response) => {
     return sendErrorResponse(
       res,
       "Error logging in user",
-      "Internal server error",
+      error instanceof Error ? error.message : "Internal server error",
       500,
     );
   }
